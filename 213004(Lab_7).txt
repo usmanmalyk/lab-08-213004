@@ -1,0 +1,241 @@
+
+
+       Lab 7
+
+    Ex:6
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Threading;
+
+namespace qno6
+{
+    public partial class Form1 : Form
+    {
+        private int timeInSeconds;
+        private bool isCountingDown;
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+            if (!isCountingDown)
+            {
+                if (int.TryParse(textBox1.Text, out timeInSeconds))
+                {
+                    isCountingDown = true;
+                    CountdownTimer();
+                }
+                else
+                {
+                    MessageBox.Show("Please enter a valid number for time in seconds.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Countdown is already running.");
+            }
+        }
+
+        private void CountdownTimer()
+        {
+            Thread countdownThread = new Thread(()=>
+            {
+                while (timeInSeconds > 0)
+                {
+                    timeInSeconds--;
+                    UpdateTimerLabel(timeInSeconds.ToString());
+                    Thread.Sleep(1000); // Sleep for 1 second
+                }
+
+                isCountingDown = false;
+                MessageBox.Show("Time's up!");
+            });
+
+            countdownThread.Start();
+        }
+        private void UpdateTimerLabel(string time)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => { textBox1.Text = time; }));
+            }
+            else
+            {
+                textBox1.Text = time;
+            }
+        }
+    }
+}
+
+  Ex: 07
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Lab_7_work_
+{
+    public partial class Form1 : Form
+    {        
+        public Form1()
+        {
+            InitializeComponent();
+
+            // Start the timer to update the clock
+            timer1.Start();
+
+            // Set initial values for date and time
+            UpdateClock();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            UpdateClock();
+        }
+
+        private void UpdateClock()
+        {
+            // Set the label text to current date and time
+            label1.Text = DateTime.Now.ToLongTimeString();
+            label2.Text = DateTime.Now.ToLongDateString();
+        }
+    }
+}
+
+   Ex: 08
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Lab_7_work_
+{
+    public partial class Form1 : Form
+    {
+        private string[] imageFiles;
+        private int currentIndex = 0;
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void LoadImages(string folderPath)
+        {
+            imageFiles = System.IO.Directory.GetFiles(folderPath, "*.jpg");
+
+            if (imageFiles.Length > 0)
+            {
+                DisplayImage(currentIndex);
+            }
+            else
+            {
+                MessageBox.Show("No images found in the selected folder.");
+            }
+        }
+
+        private void DisplayImage(int index)
+        {
+            if (index >= 0 && index < imageFiles.Length)
+            {
+                pictureBox1.Image = Image.FromFile(imageFiles[index]);
+                label1.Text = $"{index + 1} / {imageFiles.Length}";
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
+            {
+                DialogResult result = folderDialog.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderDialog.SelectedPath))
+                {
+                    LoadImages(folderDialog.SelectedPath);
+                }
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (currentIndex > 0)
+            {
+                currentIndex--;
+                DisplayImage(currentIndex);
+            }
+        }
+
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            if (currentIndex < imageFiles.Length - 1)
+            {
+                currentIndex++;
+                DisplayImage(currentIndex);
+            }
+        }
+    }
+}
+
+   Ex: 09
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Lab_7_work_
+{
+    public partial class Form1 : Form
+    {
+        private const int MaxCharacters = 160;
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (textBox1.Text.Length > MaxCharacters)
+            {
+                textBox1.Text = textBox1.Text.Substring(0, MaxCharacters);
+                textBox1.SelectionStart = MaxCharacters;
+                textBox1.SelectionLength = 0;
+            }
+
+            label1.Text = $"{textBox1.Text.Length} / {MaxCharacters}";
+        }
+    }
+}
+
+
+
+
+
